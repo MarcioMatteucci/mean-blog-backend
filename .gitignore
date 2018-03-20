@@ -11,6 +11,9 @@ pids
 *.seed
 *.pid.lock
 
+# Build de angular
+dist
+
 # Uploads folder
 uploads
 
