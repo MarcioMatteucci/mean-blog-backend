@@ -216,7 +216,7 @@ module.exports = {
          const user = await User.findById(req.body.userId).exec();
 
          // Elimino la imagen anterior
-         if (fs.existsSync(user.image) && user.image !== './uploads/users/default-avatar.png') {
+         if (fs.existsSync(user.image) && user.image !== './uploads/users/default-avatar.jpg') {
             // Ya tiene una imagen de usuario anterior
             await fs.unlinkSync(user.image);
          }

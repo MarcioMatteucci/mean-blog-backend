@@ -10,7 +10,7 @@ const userSchema = new Schema({
    password: { type: String, required: true },
    email: { type: String, required: true, unique: true, lowercase: true },
    role: { type: String, enum: ['admin', 'user'], required: false, default: 'user' },
-   image: { type: String, required: false, default: './uploads/users/default-avatar.png' },
+   image: { type: String, required: false, default: './uploads/users/default-avatar.jpg' },
 
 }, { timestamps: true });
 

@@ -24,7 +24,7 @@ app.use(fileUpload({
 // Static files *PROXIMAMENTE*
 
 // Routes
-// app.use('/api', routes);
+app.use('/api', routes);
 
 // Error handling
 app.use((req, res, next) => {
