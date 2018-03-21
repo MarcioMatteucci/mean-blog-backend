@@ -21,10 +21,11 @@ app.use(fileUpload({
    limits: { fileSize: 5 * 1024 * 1024 } // Max Size, mirar el valor de truncated
 }));
 
-// Static files *PROXIMAMENTE*
-
 // Routes
 app.use('/api', routes);
+
+// Static files. Build de Angular
+app.use('/', express.static(path.join(__dirname, '../dist')));
 
 // Error handling
 app.use((req, res, next) => {
