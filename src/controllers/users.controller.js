@@ -229,7 +229,7 @@ module.exports = {
          // Persisto
          await user.save();
 
-         res.status(200).json({ user });
+         res.sendFile(path.resolve(user.image));
 
       } catch (err) {
          console.error(err);
