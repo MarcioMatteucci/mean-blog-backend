@@ -239,6 +239,39 @@ module.exports = {
             res.status(500).json({ msg: 'Error al actualizar la imagen de usuario', error: err });
          }
       }
+   },
+
+   /*============================
+   Actualizar contraseña del user
+   ============================*/
+   changePassword: async (req, res) => {
+
+      try {
+
+         // El user viene del token, seguro existe
+         const user = await User.findById(req.body.userId).exec();
+
+         if (req.body.currentlyPassword === req.body.newPassword) {
+            return res.status(422).json({ msg: 'Debe ingresar una contraseña distinta a la actual' });
+         }
+
+         const isMatch = await user.isValidPassword(req.body.currentlyPassword);
+
+         if (!isMatch) {
+            return res.status(422).json({ msg: 'Has ingresado una contraseña que no coincide con su contraseña actual' });
+         }
+
+         user.password = req.body.newPassword;
+
+         await user.save();
+
+         res.status(200).json({ msg: 'Has actualizado tu contraseña, pruebala cuando vuelvas a logear' });
+
+      } catch (err) {
+         console.error(err);
+         res.status(500).json({ msg: 'Error al acutalizar la contraseña del usuario', error: err });
+      }
+
    }
 
 }
