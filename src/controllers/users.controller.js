@@ -37,6 +37,8 @@ module.exports = {
             role: req.body.role
          });
 
+         user.preSaveEnabled = true;
+
          // Corro las 2 promesas en paralelo y espero a q terminen ambas
          const [newUser, tokenInfo] = await Promise.all([
             user.save(),
@@ -224,6 +226,7 @@ module.exports = {
          // Si viene la imagen espero hasta subirla y recibir el path (lo q se guarda en la db)
          const imagePath = await fileUploadService.uploadFile(req.files.image, user.username);
 
+         user.preSaveEnabled = false;
          user.image = imagePath;
 
          // Persisto
@@ -261,6 +264,7 @@ module.exports = {
             return res.status(422).json({ msg: 'Has ingresado una contraseña que no coincide con su contraseña actual' });
          }
 
+         user.preSaveEnabled = true;
          user.password = req.body.newPassword;
 
          await user.save();

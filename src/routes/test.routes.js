@@ -27,7 +27,6 @@ router.get('/admin', [
 });
 
 router.post('/upload', (req, res) => {
-   // console.log(req.files.image);
    const file = req.files.image;
    if (!fileUploadService.isValidExtension(file.name)) {
       return res.status(400).json({ msg: 'No es una extension válida', filename: file.name });
