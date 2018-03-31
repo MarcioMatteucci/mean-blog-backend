@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 const User = require('../models/user.model');
-const jwtService = require('../services/jwt.service');
+const authService = require('../services/auth.service');
 const fileUploadService = require('../services/fileUpload.service');
 
 module.exports = {
@@ -27,22 +27,22 @@ module.exports = {
             return res.status(422).json({ msg: 'El nombre de usuario está en uso' });
          }
 
+         const hashedPassword = await authService.hashPassword(req.body.password);
+
          // Espero para q se cree el nuevo usuario
          const user = await new User({
             name: req.body.name,
             lastname: req.body.lastname,
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPassword,
             email: req.body.email.toLowerCase(),
             role: req.body.role
          });
 
-         user.preSaveEnabled = true;
-
          // Corro las 2 promesas en paralelo y espero a q terminen ambas
          const [newUser, tokenInfo] = await Promise.all([
             user.save(),
-            jwtService.signToken(user)
+            authService.signToken(user)
          ]);
 
          user.set({ password: ':)' });
@@ -77,7 +77,7 @@ module.exports = {
          }
 
          // Espero hasta generar el token
-         const tokenInfo = await jwtService.signToken(user);
+         const tokenInfo = await authService.signToken(user);
 
          user.set({ password: ':)' });
 
@@ -98,7 +98,7 @@ module.exports = {
       try {
          const user = await User.findById(req.body.userId).exec();
 
-         const tokenInfo = await jwtService.signToken(user);
+         const tokenInfo = await authService.signToken(user);
 
          user.set({ password: ':)' });
 
@@ -202,7 +202,6 @@ module.exports = {
 
    },
 
-   // TODO
    /*==================================
    Actualizar imagen de perfil del user
    ===================================*/
@@ -220,13 +219,12 @@ module.exports = {
          // Elimino la imagen anterior
          if (fs.existsSync(user.image) && user.image !== './uploads/users/default-avatar.jpg') {
             // Ya tiene una imagen de usuario anterior
-            await fs.unlinkSync(user.image);
+            fs.unlinkSync(user.image);
          }
 
          // Si viene la imagen espero hasta subirla y recibir el path (lo q se guarda en la db)
          const imagePath = await fileUploadService.uploadFile(req.files.image, user.username);
 
-         user.preSaveEnabled = false;
          user.image = imagePath;
 
          // Persisto
@@ -255,7 +253,7 @@ module.exports = {
          const user = await User.findById(req.body.userId).exec();
 
          if (req.body.currentlyPassword === req.body.newPassword) {
-            return res.status(422).json({ msg: 'Debe ingresar una contraseña distinta a la actual' });
+            return res.status(422).json({ msg: 'Tu nueva contraseña debe ser distinta a la actual' });
          }
 
          const isMatch = await user.isValidPassword(req.body.currentlyPassword);
@@ -264,8 +262,8 @@ module.exports = {
             return res.status(422).json({ msg: 'Has ingresado una contraseña que no coincide con su contraseña actual' });
          }
 
-         user.preSaveEnabled = true;
-         user.password = req.body.newPassword;
+         const hashedNewPassword = await authService.hashPassword(req.body.newPassword);
+         user.password = hashedNewPassword;
 
          await user.save();
 

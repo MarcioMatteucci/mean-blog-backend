@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
    signToken: (user) => {
@@ -12,6 +13,20 @@ module.exports = {
       }
 
       return { token: jwt.sign(payload, process.env.JWT_SECRET), exp: payload.exp };
+   },
+
+   hashPassword: (password) => {
+      return new Promise((resolve, reject) => {
+         try {
+            // Generar salt
+            const salt = bcrypt.genSaltSync(10);
+            // Generar password hash (salt + password)
+            const passwordHash = bcrypt.hashSync(password, salt);
+            resolve(passwordHash)
+         } catch (err) {
+            throw new Error(err);
+         }
+      });
    },
 
    verifyToken: (token) => {
