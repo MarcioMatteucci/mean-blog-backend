@@ -13,15 +13,6 @@ const userSchema = new Schema({
    image: { type: String, required: false, default: './uploads/users/default-avatar.jpg' }
 }, { timestamps: true });
 
-// Metodo para comparar las passwords
-userSchema.methods.isValidPassword = async function (inputPassword) {
-   try {
-      return await bcrypt.compare(inputPassword, this.password);
-   } catch (err) {
-      throw new Error(err);
-   }
-};
-
 const User = mongoose.model('user', userSchema);
 
 module.exports = User;

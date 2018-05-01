@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { check, body, validationResult, query, header } = require('express-validator/check');
 const { sanitize } = require('express-validator/filter');
 
-const usersController = require('../controllers/users.controller');
+const authController = require('../controllers/auth.controller');
 const auth = require('../middlewares/auth.middleware');
 
 function checkErrors(req, res, next) {
@@ -35,27 +35,27 @@ router.post('/signUp', [
    sanitize('role').trim().escape(),
    body('role', 'No es un rol válido').optional().isIn(['admin', 'user']),
    body('image').optional()
-], checkErrors, usersController.signUp);
+], checkErrors, authController.signUp);
 
 router.post('/signIn', [
    sanitize('username').trim().escape(),
    body('username', 'El usuario es requerido').exists(),
    sanitize('password').trim().escape(),
    body('password', 'La contraseña es requerida').exists(),
-], checkErrors, usersController.signIn);
+], checkErrors, authController.signIn);
 
 router.get('/refreshToken', [
    header('Authorization', 'Se debe proveer un Token').not().isEmpty()
-], checkErrors, auth.isAuth, usersController.refreshToken);
+], checkErrors, auth.isAuth, authController.refreshToken);
 
 router.get('/checkUsername', [
    query('username', 'El Nombre de Usuario es requerido').exists(),
    query('username', 'El usuario debe entre 3 y 50 caracteres').isLength({ min: 3, max: 50 }),
-], checkErrors, usersController.checkUsername);
+], checkErrors, authController.checkUsername);
 
 router.get('/checkEmail', [
    query('email', 'El email es requerido').exists(),
    query('email', 'No es un formato de email válido').isEmail(),
-], checkErrors, usersController.checkEmail);
+], checkErrors, authController.checkEmail);
 
 module.exports = router;
