@@ -187,7 +187,7 @@ module.exports = {
             ]);
 
             // Valido que no le haya dado dislike aun
-            if (usersWhodislike.indexOf(userIdFromToken) !== -1) {
+            if (usersWhoDislike.indexOf(userIdFromToken) !== -1) {
                return res.status(403).json({ msg: 'Ya le has dado dislike' });
             }
 
