@@ -2,6 +2,7 @@ const { body, validationResult, query, header } = require('express-validator/che
 const { sanitize } = require('express-validator/filter')
 
 module.exports = {
+
    signUp: [
       sanitize('name').trim().escape(),
       body('name', 'El nombre es requerido').exists(),
@@ -89,4 +90,5 @@ module.exports = {
          next();
       }
    ]
+
 }

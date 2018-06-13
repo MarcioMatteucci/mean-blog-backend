@@ -1,8 +1,6 @@
 const { check, body, header, param, validationResult, query } = require('express-validator/check');
 const { sanitize } = require('express-validator/filter');
 
-
-
 module.exports = {
 
    getPostById: [
@@ -98,6 +96,5 @@ module.exports = {
          next();
       }
    ],
-
 
 }
