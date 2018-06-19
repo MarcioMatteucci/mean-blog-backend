@@ -1,19 +1,13 @@
-const { check, body, header, param, validationResult, query } = require('express-validator/check');
+const { body, header, param } = require('express-validator/check');
 const { sanitize } = require('express-validator/filter');
+
+const checkErrors = require('../services/validation.service');
 
 module.exports = {
 
    getPostById: [
       param('id', 'No es un ID de post válido').isMongoId(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    createPost: [
@@ -24,43 +18,19 @@ module.exports = {
       sanitize('body').trim().escape(),
       body('body', 'El contenido es requerido').exists(),
       body('body', 'El contenido debe tener 3 caracteres mínimo').isLength({ min: 3 }),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    likePost: [
       header('Authorization', 'Se debe proveer un Token').not().isEmpty(),
       param('id', 'No es un ID de post válido').isMongoId(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    dislikePost: [
       header('Authorization', 'Se debe proveer un Token').not().isEmpty(),
       param('id', 'No es un ID de post válido').isMongoId(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    updatePost: [
@@ -72,29 +42,13 @@ module.exports = {
       sanitize('body').trim().escape(),
       body('body', 'El contenido es requerido').exists(),
       body('body', 'El contenido debe tener 3 caracteres mínimo').isLength({ min: 3 }),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    deletePost: [
       header('Authorization', 'Se debe proveer un Token').not().isEmpty(),
       param('id', 'No es un ID de post válido').isMongoId(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
 }

@@ -1,5 +1,7 @@
-const { body, validationResult, query, header } = require('express-validator/check');
-const { sanitize } = require('express-validator/filter')
+const { body, query, header } = require('express-validator/check');
+const { sanitize } = require('express-validator/filter');
+
+const checkErrors = require('../services/validation.service');
 
 module.exports = {
 
@@ -23,15 +25,7 @@ module.exports = {
       sanitize('role').trim().escape(),
       body('role', 'No es un rol válido').optional().isIn(['admin', 'user']),
       body('image').optional(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    signIn: [
@@ -39,56 +33,24 @@ module.exports = {
       body('username', 'El usuario es requerido').exists(),
       sanitize('password').trim().escape(),
       body('password', 'La contraseña es requerida').exists(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    refreshToken: [
       header('Authorization', 'Se debe proveer un Token').not().isEmpty(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    checkUsername: [
       query('username', 'El Nombre de Usuario es requerido').exists(),
       query('username', 'El usuario debe entre 3 y 50 caracteres').isLength({ min: 3, max: 50 }),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-         }
-
-         next();
-      }
+      checkErrors
    ],
 
    checkEmail: [
       query('email', 'El email es requerido').exists(),
       query('email', 'No es un formato de email válido').isEmail(),
-      (req, res, next) => {
-         const errors = validationResult(req);
-
-         if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.mapped() });
-         }
-
-         next();
-      }
+      checkErrors
    ]
 
 }
