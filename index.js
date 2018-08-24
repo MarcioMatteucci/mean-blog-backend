@@ -1,6 +1,10 @@
 // 3rd party Modules
 const mongoose = require('mongoose');
 
+// Mongoose settings (a partir de la version 5.2.9, esperando la 5.2.10)
+// mongoose.set('useFindAndModify', false);
+// mongoose.set('useCreateIndex', true);
+
 // Custom files
 const app = require('./src/app');
 
@@ -11,7 +15,7 @@ const port = process.env.PORT || 3000
 
 // Mongoose
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.LOCALDB_URI)
+mongoose.connect(process.env.LOCALDB_URI, { useNewUrlParser: true })
    .then(() => {
       console.log('Conectado a la db: ' + process.env.LOCALDB_URI);
       // Start server una vez conectado a la db
