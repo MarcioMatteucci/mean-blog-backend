@@ -15,9 +15,9 @@ const port = process.env.PORT || 3000
 
 // Mongoose
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.LOCALDB_URI, { useNewUrlParser: true })
+mongoose.connect(process.env.CLOUDDB_URI, { dbName: 'mean-blog-db', useNewUrlParser: true })
    .then(() => {
-      console.log('Conectado a la db: ' + process.env.LOCALDB_URI);
+      console.log('Conectado a la db');
       // Start server una vez conectado a la db
       app.listen(port, () => {
          console.log(`Server escuchando en el puerto ${port}`);
